@@ -9,7 +9,7 @@ const pool = new Pool({
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
   max: 20,
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
+  connectionTimeoutMillis: 2000
 });
 
 // Database connection wrapper
@@ -40,7 +40,7 @@ const query = async (text, params = []) => {
 };
 
 // Transaction helper
-const transaction = async (callback) => {
+const transaction = async callback => {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
@@ -144,15 +144,17 @@ const initializeDatabase = async () => {
     `);
 
     // Create indexes for better performance
-    await query(`CREATE INDEX IF NOT EXISTS idx_clients_active ON clients(is_active);`);
-    await query(`CREATE INDEX IF NOT EXISTS idx_projects_client ON projects(client_id);`);
-    await query(`CREATE INDEX IF NOT EXISTS idx_projects_status ON projects(status);`);
-    await query(`CREATE INDEX IF NOT EXISTS idx_tasks_project ON tasks(project_id);`);
-    await query(`CREATE INDEX IF NOT EXISTS idx_tasks_due_date ON tasks(due_date);`);
-    await query(`CREATE INDEX IF NOT EXISTS idx_tasks_status ON tasks(status);`);
-    await query(`CREATE INDEX IF NOT EXISTS idx_tasks_priority ON tasks(priority);`);
-    await query(`CREATE INDEX IF NOT EXISTS idx_events_date_range ON events(start_date_time, end_date_time);`);
-    
+    await query('CREATE INDEX IF NOT EXISTS idx_clients_active ON clients(is_active);');
+    await query('CREATE INDEX IF NOT EXISTS idx_projects_client ON projects(client_id);');
+    await query('CREATE INDEX IF NOT EXISTS idx_projects_status ON projects(status);');
+    await query('CREATE INDEX IF NOT EXISTS idx_tasks_project ON tasks(project_id);');
+    await query('CREATE INDEX IF NOT EXISTS idx_tasks_due_date ON tasks(due_date);');
+    await query('CREATE INDEX IF NOT EXISTS idx_tasks_status ON tasks(status);');
+    await query('CREATE INDEX IF NOT EXISTS idx_tasks_priority ON tasks(priority);');
+    await query(
+      'CREATE INDEX IF NOT EXISTS idx_events_date_range ON events(start_date_time, end_date_time);'
+    );
+
     // Create updated_at trigger function
     await query(`
       CREATE OR REPLACE FUNCTION update_updated_at_column()

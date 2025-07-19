@@ -11,7 +11,7 @@ root.render(
     <BrowserRouter>
       <GlobalStyles />
       <App />
-      <Toaster 
+      <Toaster
         position="top-right"
         toastOptions={{
           duration: 4000,
@@ -20,20 +20,20 @@ root.render(
             color: '#333333',
             boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
             borderRadius: '12px',
-            border: '1px solid #e1e5e9',
+            border: '1px solid #e1e5e9'
           },
           success: {
             style: {
               background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              color: '#ffffff',
-            },
+              color: '#ffffff'
+            }
           },
           error: {
             style: {
               background: '#ff6b6b',
-              color: '#ffffff',
-            },
-          },
+              color: '#ffffff'
+            }
+          }
         }}
       />
     </BrowserRouter>

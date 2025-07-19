@@ -235,10 +235,14 @@ const StatusBadge = styled.span`
   letter-spacing: 0.5px;
   background: ${props => {
     switch (props.status) {
-      case 'active': return 'linear-gradient(135deg, #2ecc71, #27ae60)';
-      case 'completed': return 'linear-gradient(135deg, #3498db, #2980b9)';
-      case 'on-hold': return 'linear-gradient(135deg, #f39c12, #e67e22)';
-      default: return 'linear-gradient(135deg, #95a5a6, #7f8c8d)';
+      case 'active':
+        return 'linear-gradient(135deg, #2ecc71, #27ae60)';
+      case 'completed':
+        return 'linear-gradient(135deg, #3498db, #2980b9)';
+      case 'on-hold':
+        return 'linear-gradient(135deg, #f39c12, #e67e22)';
+      default:
+        return 'linear-gradient(135deg, #95a5a6, #7f8c8d)';
     }
   }};
   color: white;
@@ -358,7 +362,8 @@ const ProjectsPage = () => {
     {
       id: '1',
       name: 'Website Redesign',
-      description: 'Complete overhaul of the company website with modern design and improved user experience.',
+      description:
+        'Complete overhaul of the company website with modern design and improved user experience.',
       client: 'The Candy Store',
       clientColor: '#3498db',
       status: 'active',
@@ -371,7 +376,8 @@ const ProjectsPage = () => {
     {
       id: '2',
       name: 'Marketing Campaign',
-      description: 'Launch comprehensive marketing campaign for Q1 featuring social media and email marketing.',
+      description:
+        'Launch comprehensive marketing campaign for Q1 featuring social media and email marketing.',
       client: 'The Estate Plan',
       clientColor: '#e74c3c',
       status: 'active',
@@ -384,7 +390,8 @@ const ProjectsPage = () => {
     {
       id: '3',
       name: 'Database Migration',
-      description: 'Migrate legacy database to cloud infrastructure with improved performance and security.',
+      description:
+        'Migrate legacy database to cloud infrastructure with improved performance and security.',
       client: 'Tech Solutions Inc',
       clientColor: '#2ecc71',
       status: 'completed',
@@ -397,7 +404,8 @@ const ProjectsPage = () => {
     {
       id: '4',
       name: 'Brand Identity',
-      description: 'Develop new brand identity including logo, color palette, and brand guidelines.',
+      description:
+        'Develop new brand identity including logo, color palette, and brand guidelines.',
       client: 'Creative Agency',
       clientColor: '#f39c12',
       status: 'on-hold',
@@ -410,20 +418,21 @@ const ProjectsPage = () => {
   ]);
 
   const filteredProjects = projects.filter(project => {
-    const matchesSearch = project.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         project.client.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         project.description.toLowerCase().includes(searchQuery.toLowerCase());
-    
+    const matchesSearch =
+      project.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      project.client.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      project.description.toLowerCase().includes(searchQuery.toLowerCase());
+
     const matchesStatus = statusFilter === 'all' || project.status === statusFilter;
-    
+
     return matchesSearch && matchesStatus;
   });
 
-  const handleEdit = (projectId) => {
+  const handleEdit = projectId => {
     console.log('Edit project:', projectId);
   };
 
-  const handleDelete = (projectId) => {
+  const handleDelete = projectId => {
     console.log('Delete project:', projectId);
   };
 
@@ -443,13 +452,10 @@ const ProjectsPage = () => {
               type="text"
               placeholder="Search projects..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={e => setSearchQuery(e.target.value)}
             />
           </SearchContainer>
-          <FilterSelect
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-          >
+          <FilterSelect value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
             <option value="all">All Status</option>
             <option value="active">Active</option>
             <option value="completed">Completed</option>
@@ -466,10 +472,9 @@ const ProjectsPage = () => {
         <EmptyState>
           <h3>No projects found</h3>
           <p>
-            {searchQuery || statusFilter !== 'all' ? 
-              'No projects match your search criteria. Try adjusting your filters.' :
-              'Get started by creating your first project.'
-            }
+            {searchQuery || statusFilter !== 'all'
+              ? 'No projects match your search criteria. Try adjusting your filters.'
+              : 'Get started by creating your first project.'}
           </p>
           {!searchQuery && statusFilter === 'all' && (
             <AddButton onClick={() => setShowAddModal(true)}>
@@ -480,7 +485,7 @@ const ProjectsPage = () => {
         </EmptyState>
       ) : (
         <ProjectsGrid>
-          {filteredProjects.map((project) => (
+          {filteredProjects.map(project => (
             <ProjectCard key={project.id} className="hover-lift">
               <ProjectHeader>
                 <ProjectInfo>
@@ -502,9 +507,7 @@ const ProjectsPage = () => {
                 </StatusBadge>
               </ProjectHeader>
 
-              <ProjectDescription>
-                {project.description}
-              </ProjectDescription>
+              <ProjectDescription>{project.description}</ProjectDescription>
 
               <ProjectStats>
                 <StatItem>
@@ -522,13 +525,15 @@ const ProjectsPage = () => {
               </ProjectStats>
 
               <div>
-                <div style={{ 
-                  display: 'flex', 
-                  justifyContent: 'space-between', 
-                  fontSize: '12px', 
-                  color: '#666666',
-                  marginBottom: '4px'
-                }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    fontSize: '12px',
+                    color: '#666666',
+                    marginBottom: '4px'
+                  }}
+                >
                   <span>Progress</span>
                   <span>{getProgress(project.completedTasks, project.taskCount)}%</span>
                 </div>
@@ -538,15 +543,15 @@ const ProjectsPage = () => {
               </div>
 
               <ProjectActions>
-                <ActionButton 
-                  variant="edit" 
+                <ActionButton
+                  variant="edit"
                   title="Edit Project"
                   onClick={() => handleEdit(project.id)}
                 >
                   <FiEdit />
                 </ActionButton>
-                <ActionButton 
-                  variant="delete" 
+                <ActionButton
+                  variant="delete"
                   title="Delete Project"
                   onClick={() => handleDelete(project.id)}
                 >
@@ -558,10 +563,7 @@ const ProjectsPage = () => {
         </ProjectsGrid>
       )}
 
-      <AddProjectModal 
-        isOpen={showAddModal} 
-        onClose={() => setShowAddModal(false)} 
-      />
+      <AddProjectModal isOpen={showAddModal} onClose={() => setShowAddModal(false)} />
     </PageContainer>
   );
 };

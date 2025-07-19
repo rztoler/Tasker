@@ -1,8 +1,22 @@
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { FiArrowLeft, FiPlus, FiClock, FiCalendar, FiCheckCircle, FiAlertTriangle } from 'react-icons/fi';
-import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import {
+  FiArrowLeft,
+  FiPlus
+} from 'react-icons/fi';
+import {
+  PieChart,
+  Pie,
+  Cell,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer
+} from 'recharts';
 import AddTaskModal from '../components/Modals/AddTaskModal';
 
 const PageContainer = styled.div`
@@ -315,23 +329,31 @@ const StatusBadge = styled.span`
   font-weight: 500;
   background: ${props => {
     switch (props.status) {
-      case 'completed': return '#d4edda';
-      case 'in-progress': return '#d1ecf1';
-      case 'pending': return '#fff3cd';
-      default: return '#f8d7da';
+      case 'completed':
+        return '#d4edda';
+      case 'in-progress':
+        return '#d1ecf1';
+      case 'pending':
+        return '#fff3cd';
+      default:
+        return '#f8d7da';
     }
   }};
   color: ${props => {
     switch (props.status) {
-      case 'completed': return '#155724';
-      case 'in-progress': return '#0c5460';
-      case 'pending': return '#856404';
-      default: return '#721c24';
+      case 'completed':
+        return '#155724';
+      case 'in-progress':
+        return '#0c5460';
+      case 'pending':
+        return '#856404';
+      default:
+        return '#721c24';
     }
   }};
 `;
 
-const getPriorityColor = (priority) => {
+const getPriorityColor = priority => {
   const colors = {
     1: '#95a5a6',
     2: '#3498db',
@@ -374,7 +396,7 @@ const ClientDashboard = () => {
     { name: 'Tue', completed: 1, pending: 2 },
     { name: 'Wed', completed: 3, pending: 1 },
     { name: 'Thu', completed: 1, pending: 3 },
-    { name: 'Fri', completed: 0, pending: 2 },
+    { name: 'Fri', completed: 0, pending: 2 }
   ];
 
   const upcomingTasks = [
@@ -495,7 +517,7 @@ const ClientDashboard = () => {
       <TasksSection>
         <h3>Upcoming Tasks</h3>
         <TaskList>
-          {upcomingTasks.map((task) => (
+          {upcomingTasks.map(task => (
             <TaskItem key={task.id} priority={task.priority}>
               <TaskInfo>
                 <h4>{task.name}</h4>
@@ -503,9 +525,7 @@ const ClientDashboard = () => {
                 <p className="due-date">Due: {task.dueDate}</p>
               </TaskInfo>
               <TaskMeta>
-                <StatusBadge status={task.status}>
-                  {task.status.replace('-', ' ')}
-                </StatusBadge>
+                <StatusBadge status={task.status}>{task.status.replace('-', ' ')}</StatusBadge>
                 <span>Priority: {task.priority}</span>
               </TaskMeta>
             </TaskItem>
@@ -513,10 +533,7 @@ const ClientDashboard = () => {
         </TaskList>
       </TasksSection>
 
-      <AddTaskModal 
-        isOpen={showAddTaskModal} 
-        onClose={() => setShowAddTaskModal(false)} 
-      />
+      <AddTaskModal isOpen={showAddTaskModal} onClose={() => setShowAddTaskModal(false)} />
     </PageContainer>
   );
 };

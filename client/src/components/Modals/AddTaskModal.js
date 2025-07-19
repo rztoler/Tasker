@@ -4,7 +4,7 @@ import Modal from 'react-modal';
 import DatePicker from 'react-datepicker';
 import { FiX, FiCheckSquare, FiFolderPlus, FiCalendar, FiClock, FiFlag } from 'react-icons/fi';
 import toast from 'react-hot-toast';
-import "react-datepicker/dist/react-datepicker.css";
+import 'react-datepicker/dist/react-datepicker.css';
 
 const modalStyles = {
   overlay: {
@@ -12,7 +12,7 @@ const modalStyles = {
     zIndex: 1000,
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   content: {
     position: 'relative',
@@ -24,7 +24,7 @@ const modalStyles = {
     maxWidth: '600px',
     width: '90%',
     maxHeight: '90vh',
-    overflow: 'visible',
+    overflow: 'visible'
   }
 };
 
@@ -195,14 +195,15 @@ const PriorityButton = styled.button`
   border-radius: 8px;
   font-size: 13px;
   font-weight: 600;
-  border: 2px solid ${props => props.isSelected ? getPriorityColor(props.priority) : '#e1e5e9'};
-  background: ${props => props.isSelected ? getPriorityColor(props.priority) : 'white'};
-  color: ${props => props.isSelected ? 'white' : '#666666'};
+  border: 2px solid ${props => (props.isSelected ? getPriorityColor(props.priority) : '#e1e5e9')};
+  background: ${props => (props.isSelected ? getPriorityColor(props.priority) : 'white')};
+  color: ${props => (props.isSelected ? 'white' : '#666666')};
   transition: all 0.2s ease;
 
   &:hover {
     border-color: ${props => getPriorityColor(props.priority)};
-    background: ${props => props.isSelected ? getPriorityColor(props.priority) : 'rgba(102, 126, 234, 0.05)'};
+    background: ${props =>
+      props.isSelected ? getPriorityColor(props.priority) : 'rgba(102, 126, 234, 0.05)'};
   }
 `;
 
@@ -245,8 +246,10 @@ const Button = styled.button`
   font-size: 14px;
   font-weight: 600;
   transition: all 0.2s ease;
-  
-  ${props => props.variant === 'primary' ? `
+
+  ${props =>
+    props.variant === 'primary'
+      ? `
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     
@@ -254,7 +257,8 @@ const Button = styled.button`
       transform: translateY(-2px);
       box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
     }
-  ` : `
+  `
+      : `
     background: #f1f3f4;
     color: #666666;
     
@@ -277,7 +281,7 @@ const ErrorMessage = styled.div`
   margin-top: 4px;
 `;
 
-const getPriorityColor = (priority) => {
+const getPriorityColor = priority => {
   const colors = {
     1: '#95a5a6',
     2: '#3498db',
@@ -321,13 +325,13 @@ const AddTaskModal = ({ isOpen, onClose }) => {
     { value: 8, label: '8 hours' }
   ];
 
-  const handleInputChange = (e) => {
+  const handleInputChange = e => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
-    
+
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -336,14 +340,14 @@ const AddTaskModal = ({ isOpen, onClose }) => {
     }
   };
 
-  const handleDateChange = (date) => {
+  const handleDateChange = date => {
     setFormData(prev => ({
       ...prev,
       dueDate: date
     }));
   };
 
-  const handlePrioritySelect = (priority) => {
+  const handlePrioritySelect = priority => {
     setFormData(prev => ({
       ...prev,
       priority
@@ -375,9 +379,9 @@ const AddTaskModal = ({ isOpen, onClose }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -387,7 +391,7 @@ const AddTaskModal = ({ isOpen, onClose }) => {
     try {
       // TODO: API call to create task
       await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
-      
+
       toast.success('Task created successfully!');
       onClose();
       setFormData({
@@ -419,12 +423,7 @@ const AddTaskModal = ({ isOpen, onClose }) => {
   };
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onRequestClose={handleClose}
-      style={modalStyles}
-      ariaHideApp={false}
-    >
+    <Modal isOpen={isOpen} onRequestClose={handleClose} style={modalStyles} ariaHideApp={false}>
       <ModalContent>
         <ModalHeader>
           <h2>Add New Task</h2>
@@ -454,13 +453,9 @@ const AddTaskModal = ({ isOpen, onClose }) => {
               <FiFolderPlus />
               Project *
             </Label>
-            <Select
-              name="projectId"
-              value={formData.projectId}
-              onChange={handleInputChange}
-            >
+            <Select name="projectId" value={formData.projectId} onChange={handleInputChange}>
               <option value="">Select a project</option>
-              {projects.map((project) => (
+              {projects.map(project => (
                 <option key={project.id} value={project.id}>
                   {project.name} ({project.client})
                 </option>
@@ -492,12 +487,8 @@ const AddTaskModal = ({ isOpen, onClose }) => {
                 <FiClock />
                 Duration *
               </Label>
-              <Select
-                name="duration"
-                value={formData.duration}
-                onChange={handleInputChange}
-              >
-                {durationOptions.map((option) => (
+              <Select name="duration" value={formData.duration} onChange={handleInputChange}>
+                {durationOptions.map(option => (
                   <option key={option.value} value={option.value}>
                     {option.label}
                   </option>
@@ -513,7 +504,7 @@ const AddTaskModal = ({ isOpen, onClose }) => {
               Priority
             </Label>
             <PriorityContainer>
-              {[1, 2, 3, 4, 5].map((priority) => (
+              {[1, 2, 3, 4, 5].map(priority => (
                 <PriorityButton
                   key={priority}
                   type="button"
@@ -528,9 +519,7 @@ const AddTaskModal = ({ isOpen, onClose }) => {
           </FormGroup>
 
           <FormGroup>
-            <Label>
-              Description (Optional)
-            </Label>
+            <Label>Description (Optional)</Label>
             <TextArea
               name="description"
               value={formData.description}

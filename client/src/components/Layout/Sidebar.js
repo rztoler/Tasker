@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import { 
-  FiHome, 
-  FiUsers, 
-  FiFolderPlus, 
-  FiCheckSquare, 
-  FiCalendar, 
-  FiBarChart3,
+import {
+  FiHome,
+  FiUsers,
+  FiFolderPlus,
+  FiCheckSquare,
+  FiCalendar,
+  FiBarChart,
   FiMenu,
   FiX
 } from 'react-icons/fi';
@@ -23,7 +23,7 @@ const SidebarContainer = styled.aside`
   border-right: 1px solid rgba(255, 255, 255, 0.2);
   padding: 24px 0;
   z-index: 1000;
-  transform: translateX(${props => props.isOpen ? '0' : '-100%'});
+  transform: translateX(${props => (props.isOpen ? '0' : '-100%')});
   transition: transform 0.3s ease;
 
   @media (min-width: 1025px) {
@@ -58,15 +58,16 @@ const NavItem = styled(Link)`
   padding: 16px 20px;
   margin-bottom: 8px;
   border-radius: 12px;
-  color: ${props => props.isActive ? '#333333' : 'rgba(255, 255, 255, 0.8)'};
-  background: ${props => props.isActive ? 'rgba(255, 255, 255, 0.9)' : 'transparent'};
-  font-weight: ${props => props.isActive ? '600' : '400'};
+  color: ${props => (props.isActive ? '#333333' : 'rgba(255, 255, 255, 0.8)')};
+  background: ${props => (props.isActive ? 'rgba(255, 255, 255, 0.9)' : 'transparent')};
+  font-weight: ${props => (props.isActive ? '600' : '400')};
   text-decoration: none;
   transition: all 0.2s ease;
-  
+
   &:hover {
-    background: ${props => props.isActive ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.1)'};
-    color: ${props => props.isActive ? '#333333' : 'white'};
+    background: ${props =>
+      props.isActive ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.1)'};
+    color: ${props => (props.isActive ? '#333333' : 'white')};
     transform: translateX(4px);
   }
 
@@ -105,7 +106,7 @@ const Overlay = styled.div`
   bottom: 0;
   background: rgba(0, 0, 0, 0.5);
   z-index: 999;
-  display: ${props => props.isOpen ? 'block' : 'none'};
+  display: ${props => (props.isOpen ? 'block' : 'none')};
 
   @media (min-width: 1025px) {
     display: none;
@@ -122,7 +123,7 @@ const Sidebar = () => {
     { path: '/projects', label: 'Projects', icon: FiFolderPlus },
     { path: '/tasks', label: 'Tasks', icon: FiCheckSquare },
     { path: '/calendar', label: 'Calendar', icon: FiCalendar },
-    { path: '/workload', label: 'Workload', icon: FiBarChart3 },
+    { path: '/workload', label: 'Workload', icon: FiBarChart }
   ];
 
   const toggleSidebar = () => {
@@ -135,29 +136,22 @@ const Sidebar = () => {
 
   return (
     <>
-      <MenuToggle onClick={toggleSidebar}>
-        {isOpen ? <FiX /> : <FiMenu />}
-      </MenuToggle>
-      
+      <MenuToggle onClick={toggleSidebar}>{isOpen ? <FiX /> : <FiMenu />}</MenuToggle>
+
       <Overlay isOpen={isOpen} onClick={closeSidebar} />
-      
+
       <SidebarContainer isOpen={isOpen}>
         <LogoSection>
           <Logo>Tasker</Logo>
         </LogoSection>
-        
+
         <Navigation>
-          {navItems.map((item) => {
+          {navItems.map(item => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path;
-            
+
             return (
-              <NavItem
-                key={item.path}
-                to={item.path}
-                isActive={isActive}
-                onClick={closeSidebar}
-              >
+              <NavItem key={item.path} to={item.path} isActive={isActive} onClick={closeSidebar}>
                 <Icon />
                 {item.label}
               </NavItem>

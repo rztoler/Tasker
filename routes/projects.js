@@ -10,7 +10,7 @@ router.get('/', validateInput, async (req, res, next) => {
   try {
     const { clientId, status } = req.query;
     const filter = { isActive: true };
-    
+
     if (clientId) filter.clientId = clientId;
     if (status) filter.status = status;
 
@@ -60,7 +60,7 @@ router.get('/:id', validateInput, async (req, res, next) => {
 router.post('/', validateInput, validateProject, async (req, res, next) => {
   try {
     const client = await Client.findOne({ _id: req.body.clientId, isActive: true });
-    
+
     if (!client) {
       return res.status(404).json({
         success: false,
@@ -99,7 +99,7 @@ router.post('/', validateInput, validateProject, async (req, res, next) => {
 router.put('/:id', validateInput, validateProject, async (req, res, next) => {
   try {
     const client = await Client.findOne({ _id: req.body.clientId, isActive: true });
-    
+
     if (!client) {
       return res.status(404).json({
         success: false,
@@ -168,11 +168,7 @@ router.delete('/:id', validateInput, async (req, res, next) => {
       });
     }
 
-    await Project.findOneAndUpdate(
-      { _id: req.params.id },
-      { isActive: false },
-      { new: true }
-    );
+    await Project.findOneAndUpdate({ _id: req.params.id }, { isActive: false }, { new: true });
 
     res.json({
       success: true,
@@ -185,11 +181,10 @@ router.delete('/:id', validateInput, async (req, res, next) => {
 
 router.get('/:id/stats', validateInput, async (req, res, next) => {
   try {
-    const project = await Project.findOne({ _id: req.params.id, isActive: true })
-      .populate({
-        path: 'tasks',
-        match: { isActive: true }
-      });
+    const project = await Project.findOne({ _id: req.params.id, isActive: true }).populate({
+      path: 'tasks',
+      match: { isActive: true }
+    });
 
     if (!project) {
       return res.status(404).json({
@@ -200,7 +195,7 @@ router.get('/:id/stats', validateInput, async (req, res, next) => {
 
     const tasks = project.tasks || [];
     const now = new Date();
-    
+
     const stats = {
       totalTasks: tasks.length,
       pendingTasks: tasks.filter(t => t.status === 'pending').length,
@@ -210,9 +205,16 @@ router.get('/:id/stats', validateInput, async (req, res, next) => {
       scheduledTasks: tasks.filter(t => t.isScheduled).length,
       highPriorityTasks: tasks.filter(t => t.priority >= 4).length,
       totalEstimatedHours: tasks.reduce((sum, t) => sum + t.duration, 0),
-      completedHours: tasks.filter(t => t.status === 'completed').reduce((sum, t) => sum + t.duration, 0),
-      remainingHours: tasks.filter(t => t.status !== 'completed').reduce((sum, t) => sum + t.duration, 0),
-      averagePriority: tasks.length > 0 ? (tasks.reduce((sum, t) => sum + t.priority, 0) / tasks.length).toFixed(1) : 0,
+      completedHours: tasks
+        .filter(t => t.status === 'completed')
+        .reduce((sum, t) => sum + t.duration, 0),
+      remainingHours: tasks
+        .filter(t => t.status !== 'completed')
+        .reduce((sum, t) => sum + t.duration, 0),
+      averagePriority:
+        tasks.length > 0
+          ? (tasks.reduce((sum, t) => sum + t.priority, 0) / tasks.length).toFixed(1)
+          : 0,
       upcomingDeadlines: tasks
         .filter(t => t.status !== 'completed' && t.dueDate > now)
         .sort((a, b) => a.dueDate - b.dueDate)
@@ -226,7 +228,8 @@ router.get('/:id/stats', validateInput, async (req, res, next) => {
         }))
     };
 
-    stats.completionRate = stats.totalTasks > 0 ? Math.round((stats.completedTasks / stats.totalTasks) * 100) : 0;
+    stats.completionRate =
+      stats.totalTasks > 0 ? Math.round((stats.completedTasks / stats.totalTasks) * 100) : 0;
 
     res.json({
       success: true,

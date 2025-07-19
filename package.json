@@ -12,8 +12,12 @@
     "dev:full": "concurrently \"npm run dev\" \"npm run client\"",
     "test": "jest",
     "test:client": "cd client && npm test",
-    "lint": "eslint .",
+    "lint": "eslint . --ext .js",
+    "lint:fix": "eslint . --ext .js --fix",
     "lint:client": "cd client && npm run lint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "clean": "npm run lint:fix && npm run format",
     "build": "npm run client:build",
     "vercel-build": "npm run client:install && npm run client:build"
   },
@@ -36,6 +40,7 @@
     "nodemon": "^2.0.22",
     "jest": "^29.5.0",
     "eslint": "^8.40.0",
+    "prettier": "^2.8.0",
     "concurrently": "^8.0.0"
   },
   "engines": {

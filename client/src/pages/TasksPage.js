@@ -1,6 +1,15 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { FiPlus, FiSearch, FiEdit, FiTrash2, FiClock, FiCalendar, FiFlag, FiCheckCircle } from 'react-icons/fi';
+import {
+  FiPlus,
+  FiSearch,
+  FiEdit,
+  FiTrash2,
+  FiClock,
+  FiCalendar,
+  FiFlag,
+  FiCheckCircle
+} from 'react-icons/fi';
 import AddTaskModal from '../components/Modals/AddTaskModal';
 
 const PageContainer = styled.div`
@@ -200,8 +209,8 @@ const TaskCheckbox = styled.button`
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  border: 2px solid ${props => props.completed ? '#2ecc71' : '#e1e5e9'};
-  background: ${props => props.completed ? '#2ecc71' : 'white'};
+  border: 2px solid ${props => (props.completed ? '#2ecc71' : '#e1e5e9')};
+  background: ${props => (props.completed ? '#2ecc71' : 'white')};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -211,7 +220,7 @@ const TaskCheckbox = styled.button`
 
   &:hover {
     border-color: #2ecc71;
-    background: ${props => props.completed ? '#27ae60' : '#f8fff9'};
+    background: ${props => (props.completed ? '#27ae60' : '#f8fff9')};
   }
 
   svg {
@@ -246,8 +255,8 @@ const TaskInfo = styled.div`
     font-weight: 600;
     color: #333333;
     margin: 0 0 8px 0;
-    text-decoration: ${props => props.completed ? 'line-through' : 'none'};
-    opacity: ${props => props.completed ? 0.7 : 1};
+    text-decoration: ${props => (props.completed ? 'line-through' : 'none')};
+    opacity: ${props => (props.completed ? 0.7 : 1)};
   }
 
   .project {
@@ -295,7 +304,7 @@ const MetaItem = styled.div`
 
   &.overdue {
     color: #e74c3c;
-    
+
     svg {
       color: #e74c3c;
     }
@@ -311,18 +320,26 @@ const StatusBadge = styled.span`
   letter-spacing: 0.5px;
   background: ${props => {
     switch (props.status) {
-      case 'completed': return '#d4edda';
-      case 'in-progress': return '#d1ecf1';
-      case 'pending': return '#fff3cd';
-      default: return '#f8d7da';
+      case 'completed':
+        return '#d4edda';
+      case 'in-progress':
+        return '#d1ecf1';
+      case 'pending':
+        return '#fff3cd';
+      default:
+        return '#f8d7da';
     }
   }};
   color: ${props => {
     switch (props.status) {
-      case 'completed': return '#155724';
-      case 'in-progress': return '#0c5460';
-      case 'pending': return '#856404';
-      default: return '#721c24';
+      case 'completed':
+        return '#155724';
+      case 'in-progress':
+        return '#0c5460';
+      case 'pending':
+        return '#856404';
+      default:
+        return '#721c24';
     }
   }};
 `;
@@ -374,7 +391,7 @@ const EmptyState = styled.div`
   }
 `;
 
-const getPriorityColor = (priority) => {
+const getPriorityColor = priority => {
   const colors = {
     1: '#95a5a6',
     2: '#3498db',
@@ -467,46 +484,49 @@ const TasksPage = () => {
   ]);
 
   const filteredTasks = tasks.filter(task => {
-    const matchesSearch = task.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         task.project.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         task.client.toLowerCase().includes(searchQuery.toLowerCase());
-    
+    const matchesSearch =
+      task.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      task.project.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      task.client.toLowerCase().includes(searchQuery.toLowerCase());
+
     const matchesStatus = statusFilter === 'all' || task.status === statusFilter;
     const matchesPriority = priorityFilter === 'all' || task.priority.toString() === priorityFilter;
-    
+
     return matchesSearch && matchesStatus && matchesPriority;
   });
 
-  const toggleTaskComplete = (taskId) => {
-    setTasks(tasks.map(task => 
-      task.id === taskId 
-        ? { 
-            ...task, 
-            isCompleted: !task.isCompleted,
-            status: !task.isCompleted ? 'completed' : 'pending'
-          }
-        : task
-    ));
+  const toggleTaskComplete = taskId => {
+    setTasks(
+      tasks.map(task =>
+        task.id === taskId
+          ? {
+              ...task,
+              isCompleted: !task.isCompleted,
+              status: !task.isCompleted ? 'completed' : 'pending'
+            }
+          : task
+      )
+    );
   };
 
-  const handleEdit = (taskId) => {
+  const handleEdit = taskId => {
     console.log('Edit task:', taskId);
   };
 
-  const handleDelete = (taskId) => {
+  const handleDelete = taskId => {
     console.log('Delete task:', taskId);
   };
 
-  const formatDuration = (hours) => {
+  const formatDuration = hours => {
     if (hours < 1) return `${hours * 60}min`;
     return `${hours}h`;
   };
 
-  const formatDueDate = (dateString) => {
+  const formatDueDate = dateString => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      month: 'short', 
-      day: 'numeric' 
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric'
     });
   };
 
@@ -526,23 +546,17 @@ const TasksPage = () => {
               type="text"
               placeholder="Search tasks..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={e => setSearchQuery(e.target.value)}
             />
           </SearchContainer>
           <FilterContainer>
-            <FilterSelect
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-            >
+            <FilterSelect value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
               <option value="all">All Status</option>
               <option value="pending">Pending</option>
               <option value="in-progress">In Progress</option>
               <option value="completed">Completed</option>
             </FilterSelect>
-            <FilterSelect
-              value={priorityFilter}
-              onChange={(e) => setPriorityFilter(e.target.value)}
-            >
+            <FilterSelect value={priorityFilter} onChange={e => setPriorityFilter(e.target.value)}>
               <option value="all">All Priority</option>
               <option value="1">Priority 1</option>
               <option value="2">Priority 2</option>
@@ -563,10 +577,9 @@ const TasksPage = () => {
           <EmptyState>
             <h3>No tasks found</h3>
             <p>
-              {searchQuery || statusFilter !== 'all' || priorityFilter !== 'all' ? 
-                'No tasks match your search criteria. Try adjusting your filters.' :
-                'Get started by creating your first task.'
-              }
+              {searchQuery || statusFilter !== 'all' || priorityFilter !== 'all'
+                ? 'No tasks match your search criteria. Try adjusting your filters.'
+                : 'Get started by creating your first task.'}
             </p>
             {!searchQuery && statusFilter === 'all' && priorityFilter === 'all' && (
               <AddButton onClick={() => setShowAddModal(true)}>
@@ -577,7 +590,7 @@ const TasksPage = () => {
           </EmptyState>
         ) : (
           <TaskList>
-            {filteredTasks.map((task) => (
+            {filteredTasks.map(task => (
               <TaskItem key={task.id} priority={task.priority}>
                 <TaskCheckbox
                   completed={task.isCompleted}
@@ -585,16 +598,16 @@ const TasksPage = () => {
                 >
                   {task.isCompleted && <FiCheckCircle />}
                 </TaskCheckbox>
-                
+
                 <TaskContent>
                   <TaskInfo completed={task.isCompleted}>
                     <h4>{task.name}</h4>
                     <p className="project">{task.project}</p>
                     <p className="client">{task.client}</p>
                   </TaskInfo>
-                  
+
                   <TaskMeta>
-                    <MetaItem 
+                    <MetaItem
                       className={isOverdue(task.dueDate, task.isCompleted) ? 'overdue' : ''}
                     >
                       <FiCalendar />
@@ -605,24 +618,21 @@ const TasksPage = () => {
                       {formatDuration(task.duration)}
                     </MetaItem>
                     <MetaItem className="priority" priority={task.priority}>
-                      <FiFlag />
-                      P{task.priority}
+                      <FiFlag />P{task.priority}
                     </MetaItem>
-                    <StatusBadge status={task.status}>
-                      {task.status.replace('-', ' ')}
-                    </StatusBadge>
+                    <StatusBadge status={task.status}>{task.status.replace('-', ' ')}</StatusBadge>
                   </TaskMeta>
-                  
+
                   <TaskActions>
-                    <ActionButton 
-                      variant="edit" 
+                    <ActionButton
+                      variant="edit"
                       title="Edit Task"
                       onClick={() => handleEdit(task.id)}
                     >
                       <FiEdit />
                     </ActionButton>
-                    <ActionButton 
-                      variant="delete" 
+                    <ActionButton
+                      variant="delete"
                       title="Delete Task"
                       onClick={() => handleDelete(task.id)}
                     >
@@ -636,10 +646,7 @@ const TasksPage = () => {
         )}
       </TasksContainer>
 
-      <AddTaskModal 
-        isOpen={showAddModal} 
-        onClose={() => setShowAddModal(false)} 
-      />
+      <AddTaskModal isOpen={showAddModal} onClose={() => setShowAddModal(false)} />
     </PageContainer>
   );
 };

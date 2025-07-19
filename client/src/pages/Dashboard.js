@@ -1,7 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { FiPlus, FiEdit, FiTrash2, FiClock, FiAlertTriangle } from 'react-icons/fi';
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer
+} from 'recharts';
+import { FiPlus, FiClock, FiAlertTriangle } from 'react-icons/fi';
 import StatsCard from '../components/Dashboard/StatsCard';
 import ClientList from '../components/Dashboard/ClientList';
 import AddClientModal from '../components/Modals/AddClientModal';
@@ -71,12 +79,14 @@ const TimelineButton = styled.button`
   border-radius: 8px;
   font-size: 13px;
   font-weight: 500;
-  color: ${props => props.isActive ? '#ffffff' : '#666666'};
-  background: ${props => props.isActive ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : '#f8f9fa'};
+  color: ${props => (props.isActive ? '#ffffff' : '#666666')};
+  background: ${props =>
+    props.isActive ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : '#f8f9fa'};
   transition: all 0.2s ease;
 
   &:hover {
-    background: ${props => props.isActive ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : '#e9ecef'};
+    background: ${props =>
+      props.isActive ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : '#e9ecef'};
   }
 `;
 
@@ -151,11 +161,11 @@ const AlertItem = styled.div`
   align-items: center;
   gap: 12px;
   padding: 12px 16px;
-  background: ${props => props.type === 'error' ? '#fee2e2' : '#fef3c7'};
+  background: ${props => (props.type === 'error' ? '#fee2e2' : '#fef3c7')};
   border-radius: 8px;
   margin-bottom: 8px;
   font-size: 14px;
-  color: ${props => props.type === 'error' ? '#dc2626' : '#d97706'};
+  color: ${props => (props.type === 'error' ? '#dc2626' : '#d97706')};
 
   svg {
     font-size: 16px;
@@ -171,7 +181,7 @@ const Dashboard = () => {
   const [showClientModal, setShowClientModal] = useState(false);
   const [showProjectModal, setShowProjectModal] = useState(false);
   const [showTaskModal, setShowTaskModal] = useState(false);
-  const [dashboardData, setDashboardData] = useState({
+  const [dashboardData] = useState({
     stats: {
       totalClients: 3,
       totalProjects: 13,
@@ -239,7 +249,7 @@ const Dashboard = () => {
         <ChartCard>
           <h3>Timeline</h3>
           <TimelineControls>
-            {timelineOptions.map((option) => (
+            {timelineOptions.map(option => (
               <TimelineButton
                 key={option.value}
                 isActive={activeTimeline === option.value}
@@ -253,17 +263,13 @@ const Dashboard = () => {
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={dashboardData.timeline}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <XAxis 
-                  dataKey="name" 
+                <XAxis
+                  dataKey="name"
                   axisLine={false}
                   tickLine={false}
                   tick={{ fontSize: 12, fill: '#666' }}
                 />
-                <YAxis 
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fontSize: 12, fill: '#666' }}
-                />
+                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#666' }} />
                 <Tooltip
                   contentStyle={{
                     background: '#ffffff',
@@ -272,18 +278,18 @@ const Dashboard = () => {
                     boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
                   }}
                 />
-                <Line 
-                  type="monotone" 
-                  dataKey="tasks" 
-                  stroke="#667eea" 
+                <Line
+                  type="monotone"
+                  dataKey="tasks"
+                  stroke="#667eea"
                   strokeWidth={3}
                   dot={{ fill: '#667eea', strokeWidth: 2, r: 6 }}
                   activeDot={{ r: 8, stroke: '#667eea', strokeWidth: 2 }}
                 />
-                <Line 
-                  type="monotone" 
-                  dataKey="projects" 
-                  stroke="#764ba2" 
+                <Line
+                  type="monotone"
+                  dataKey="projects"
+                  stroke="#764ba2"
                   strokeWidth={2}
                   dot={{ fill: '#764ba2', strokeWidth: 2, r: 4 }}
                 />
@@ -308,18 +314,9 @@ const Dashboard = () => {
 
       <ClientList />
 
-      <AddClientModal 
-        isOpen={showClientModal} 
-        onClose={() => setShowClientModal(false)} 
-      />
-      <AddProjectModal 
-        isOpen={showProjectModal} 
-        onClose={() => setShowProjectModal(false)} 
-      />
-      <AddTaskModal 
-        isOpen={showTaskModal} 
-        onClose={() => setShowTaskModal(false)} 
-      />
+      <AddClientModal isOpen={showClientModal} onClose={() => setShowClientModal(false)} />
+      <AddProjectModal isOpen={showProjectModal} onClose={() => setShowProjectModal(false)} />
+      <AddTaskModal isOpen={showTaskModal} onClose={() => setShowTaskModal(false)} />
     </DashboardContainer>
   );
 };

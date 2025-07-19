@@ -7,53 +7,53 @@ const { validateInput } = require('../middleware/security');
 router.get('/view', validateInput, async (req, res, next) => {
   try {
     const { startDate, endDate, view = 'week' } = req.query;
-    
+
     let start, end;
     const now = new Date();
-    
+
     if (startDate && endDate) {
       start = new Date(startDate);
       end = new Date(endDate);
     } else {
       switch (view) {
-        case 'day':
-          start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-          end = new Date(start);
-          end.setDate(start.getDate() + 1);
-          break;
-        case 'month':
-          start = new Date(now.getFullYear(), now.getMonth(), 1);
-          end = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
-          break;
-        default: // week
-          const dayOfWeek = now.getDay();
-          start = new Date(now);
-          start.setDate(now.getDate() - dayOfWeek);
-          start.setHours(0, 0, 0, 0);
-          end = new Date(start);
-          end.setDate(start.getDate() + 6);
-          end.setHours(23, 59, 59, 999);
+      case 'day':
+        start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        end = new Date(start);
+        end.setDate(start.getDate() + 1);
+        break;
+      case 'month':
+        start = new Date(now.getFullYear(), now.getMonth(), 1);
+        end = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
+        break;
+      default: {
+        const dayOfWeek = now.getDay();
+        start = new Date(now);
+        start.setDate(now.getDate() - dayOfWeek);
+        start.setHours(0, 0, 0, 0);
+        end = new Date(start);
+        end.setDate(start.getDate() + 6);
+        end.setHours(23, 59, 59, 999);
+        break;
+      }
       }
     }
 
     const [scheduledTasks, events] = await Promise.all([
       Task.find({
         isActive: true,
-        scheduledStart: { $exists: true },
-        scheduledEnd: { $exists: true },
-        scheduledStart: { $gte: start, $lte: end }
+        scheduledStart: { $exists: true, $gte: start, $lte: end },
+        scheduledEnd: { $exists: true }
       })
-      .populate({
-        path: 'project',
-        populate: { path: 'client' }
-      })
-      .sort({ scheduledStart: 1 }),
-      
+        .populate({
+          path: 'project',
+          populate: { path: 'client' }
+        })
+        .sort({ scheduledStart: 1 }),
+
       Event.find({
         isActive: true,
         startDateTime: { $gte: start, $lte: end }
-      })
-      .sort({ startDateTime: 1 })
+      }).sort({ startDateTime: 1 })
     ]);
 
     const calendarItems = [
@@ -86,7 +86,7 @@ router.get('/view', validateInput, async (req, res, next) => {
     ].sort((a, b) => new Date(a.start) - new Date(b.start));
 
     const timeSlots = generateAvailableTimeSlots(start, end, calendarItems);
-    
+
     res.json({
       success: true,
       data: {
@@ -120,11 +120,9 @@ router.get('/workload', validateInput, async (req, res, next) => {
     const [scheduledTasks, unscheduledTasks, events] = await Promise.all([
       Task.find({
         isActive: true,
-        scheduledStart: { $exists: true },
-        scheduledEnd: { $exists: true },
-        scheduledStart: { $gte: start, $lte: end }
-      })
-      .populate({
+        scheduledStart: { $exists: true, $gte: start, $lte: end },
+        scheduledEnd: { $exists: true }
+      }).populate({
         path: 'project',
         populate: { path: 'client' }
       }),
@@ -133,12 +131,8 @@ router.get('/workload', validateInput, async (req, res, next) => {
         isActive: true,
         status: { $ne: 'completed' },
         dueDate: { $gte: start, $lte: end },
-        $or: [
-          { scheduledStart: { $exists: false } },
-          { scheduledEnd: { $exists: false } }
-        ]
-      })
-      .populate({
+        $or: [{ scheduledStart: { $exists: false } }, { scheduledEnd: { $exists: false } }]
+      }).populate({
         path: 'project',
         populate: { path: 'client' }
       }),
@@ -152,14 +146,14 @@ router.get('/workload', validateInput, async (req, res, next) => {
     const totalScheduledHours = scheduledTasks.reduce((sum, task) => sum + task.duration, 0);
     const totalUnscheduledHours = unscheduledTasks.reduce((sum, task) => sum + task.duration, 0);
     const totalEventHours = events.reduce((sum, event) => sum + event.duration, 0);
-    
+
     const workingHoursPerDay = 8;
     const daysInPeriod = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
     const totalAvailableHours = daysInPeriod * workingHoursPerDay;
-    
+
     const totalCommittedHours = totalScheduledHours + totalEventHours;
     const availableHours = Math.max(0, totalAvailableHours - totalCommittedHours);
-    
+
     const canScheduleAll = totalUnscheduledHours <= availableHours;
     const utilizationRate = Math.round((totalCommittedHours / totalAvailableHours) * 100);
 
@@ -174,7 +168,7 @@ router.get('/workload', validateInput, async (req, res, next) => {
           color: task.project?.client?.color
         };
       }
-      
+
       if (task.isScheduled) {
         clientWorkload[clientName].scheduledHours += task.duration;
       } else {
@@ -208,13 +202,19 @@ router.get('/workload', validateInput, async (req, res, next) => {
           utilizationRate,
           canScheduleAll,
           overcommitted: utilizationRate > 100,
-          recommendedAction: getWorkloadRecommendation(utilizationRate, canScheduleAll, totalUnscheduledHours)
+          recommendedAction: getWorkloadRecommendation(
+            utilizationRate,
+            canScheduleAll,
+            totalUnscheduledHours
+          )
         },
-        clientBreakdown: Object.entries(clientWorkload).map(([name, data]) => ({
-          client: name,
-          ...data,
-          totalHours: data.scheduledHours + data.unscheduledHours
-        })).sort((a, b) => b.totalHours - a.totalHours)
+        clientBreakdown: Object.entries(clientWorkload)
+          .map(([name, data]) => ({
+            client: name,
+            ...data,
+            totalHours: data.scheduledHours + data.unscheduledHours
+          }))
+          .sort((a, b) => b.totalHours - a.totalHours)
       }
     });
   } catch (error) {
@@ -228,59 +228,57 @@ router.get('/dashboard', validateInput, async (req, res, next) => {
     const startOfWeek = new Date(now);
     startOfWeek.setDate(now.getDate() - now.getDay());
     startOfWeek.setHours(0, 0, 0, 0);
-    
+
     const endOfWeek = new Date(startOfWeek);
     endOfWeek.setDate(startOfWeek.getDate() + 6);
     endOfWeek.setHours(23, 59, 59, 999);
 
-    const [
-      todayTasks,
-      weekTasks,
-      overdueTasks,
-      upcomingEvents,
-      weeklyWorkload
-    ] = await Promise.all([
-      Task.find({
-        isActive: true,
-        scheduledStart: {
-          $gte: new Date(now.getFullYear(), now.getMonth(), now.getDate()),
-          $lt: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1)
-        }
-      }).populate({ path: 'project', populate: { path: 'client' } }),
-
-      Task.find({
-        isActive: true,
-        scheduledStart: { $gte: startOfWeek, $lte: endOfWeek }
-      }).populate({ path: 'project', populate: { path: 'client' } }),
-
-      Task.find({
-        isActive: true,
-        status: { $ne: 'completed' },
-        dueDate: { $lt: now }
-      }).populate({ path: 'project', populate: { path: 'client' } }),
-
-      Event.find({
-        isActive: true,
-        startDateTime: { $gte: now },
-        endDateTime: { $lte: endOfWeek }
-      }).sort({ startDateTime: 1 }).limit(5),
-
-      Task.aggregate([
-        {
-          $match: {
-            isActive: true,
-            scheduledStart: { $gte: startOfWeek, $lte: endOfWeek }
+    const [todayTasks, weekTasks, overdueTasks, upcomingEvents, weeklyWorkload] = await Promise.all(
+      [
+        Task.find({
+          isActive: true,
+          scheduledStart: {
+            $gte: new Date(now.getFullYear(), now.getMonth(), now.getDate()),
+            $lt: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1)
           }
-        },
-        {
-          $group: {
-            _id: { $dayOfWeek: '$scheduledStart' },
-            totalHours: { $sum: '$duration' },
-            taskCount: { $sum: 1 }
+        }).populate({ path: 'project', populate: { path: 'client' } }),
+
+        Task.find({
+          isActive: true,
+          scheduledStart: { $gte: startOfWeek, $lte: endOfWeek }
+        }).populate({ path: 'project', populate: { path: 'client' } }),
+
+        Task.find({
+          isActive: true,
+          status: { $ne: 'completed' },
+          dueDate: { $lt: now }
+        }).populate({ path: 'project', populate: { path: 'client' } }),
+
+        Event.find({
+          isActive: true,
+          startDateTime: { $gte: now },
+          endDateTime: { $lte: endOfWeek }
+        })
+          .sort({ startDateTime: 1 })
+          .limit(5),
+
+        Task.aggregate([
+          {
+            $match: {
+              isActive: true,
+              scheduledStart: { $gte: startOfWeek, $lte: endOfWeek }
+            }
+          },
+          {
+            $group: {
+              _id: { $dayOfWeek: '$scheduledStart' },
+              totalHours: { $sum: '$duration' },
+              taskCount: { $sum: 1 }
+            }
           }
-        }
-      ])
-    ]);
+        ])
+      ]
+    );
 
     const dailyBreakdown = Array.from({ length: 7 }, (_, i) => {
       const dayData = weeklyWorkload.find(w => w._id === i + 1) || { totalHours: 0, taskCount: 0 };
@@ -334,28 +332,30 @@ router.get('/dashboard', validateInput, async (req, res, next) => {
 function generateAvailableTimeSlots(startDate, endDate, existingItems) {
   const slots = [];
   const workingHours = { start: 9, end: 17 };
-  
+
   const current = new Date(startDate);
   while (current <= endDate) {
     if (current.getDay() !== 0 && current.getDay() !== 6) {
       const dayStart = new Date(current);
       dayStart.setHours(workingHours.start, 0, 0, 0);
-      
+
       const dayEnd = new Date(current);
       dayEnd.setHours(workingHours.end, 0, 0, 0);
-      
-      const dayItems = existingItems.filter(item => {
-        const itemStart = new Date(item.start);
-        const itemEnd = new Date(item.end);
-        return itemStart.toDateString() === current.toDateString();
-      }).sort((a, b) => new Date(a.start) - new Date(b.start));
-      
+
+      const dayItems = existingItems
+        .filter(item => {
+          const itemStart = new Date(item.start);
+          const _itemEnd = new Date(item.end);
+          return itemStart.toDateString() === current.toDateString();
+        })
+        .sort((a, b) => new Date(a.start) - new Date(b.start));
+
       let slotStart = dayStart;
-      
+
       dayItems.forEach(item => {
         const itemStart = new Date(item.start);
         const itemEnd = new Date(item.end);
-        
+
         if (slotStart < itemStart) {
           const duration = (itemStart - slotStart) / (1000 * 60 * 60);
           if (duration >= 0.5) {
@@ -368,7 +368,7 @@ function generateAvailableTimeSlots(startDate, endDate, existingItems) {
         }
         slotStart = itemEnd > slotStart ? itemEnd : slotStart;
       });
-      
+
       if (slotStart < dayEnd) {
         const duration = (dayEnd - slotStart) / (1000 * 60 * 60);
         if (duration >= 0.5) {
@@ -380,10 +380,10 @@ function generateAvailableTimeSlots(startDate, endDate, existingItems) {
         }
       }
     }
-    
+
     current.setDate(current.getDate() + 1);
   }
-  
+
   return slots;
 }
 

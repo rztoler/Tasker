@@ -9,7 +9,7 @@ router.get('/', validateInput, async (req, res, next) => {
   try {
     const { projectId, status, priority, dueDate, page = 1, limit = 50 } = req.query;
     const filter = { isActive: true };
-    
+
     if (projectId) filter.projectId = projectId;
     if (status) filter.status = status;
     if (priority) filter.priority = priority;
@@ -55,11 +55,11 @@ router.get('/overdue', validateInput, async (req, res, next) => {
       status: { $ne: 'completed' },
       dueDate: { $lt: new Date() }
     })
-    .populate({
-      path: 'project',
-      populate: { path: 'client' }
-    })
-    .sort({ priority: -1, dueDate: 1 });
+      .populate({
+        path: 'project',
+        populate: { path: 'client' }
+      })
+      .sort({ priority: -1, dueDate: 1 });
 
     res.json({
       success: true,
@@ -106,11 +106,10 @@ router.get('/scheduled', validateInput, async (req, res, next) => {
 
 router.get('/:id', validateInput, async (req, res, next) => {
   try {
-    const task = await Task.findOne({ _id: req.params.id, isActive: true })
-      .populate({
-        path: 'project',
-        populate: { path: 'client' }
-      });
+    const task = await Task.findOne({ _id: req.params.id, isActive: true }).populate({
+      path: 'project',
+      populate: { path: 'client' }
+    });
 
     if (!task) {
       return res.status(404).json({
@@ -131,7 +130,7 @@ router.get('/:id', validateInput, async (req, res, next) => {
 router.post('/', validateInput, validateTask, async (req, res, next) => {
   try {
     const project = await Project.findOne({ _id: req.body.projectId, isActive: true });
-    
+
     if (!project) {
       return res.status(404).json({
         success: false,
@@ -176,7 +175,7 @@ router.put('/:id', validateInput, validateTask, async (req, res, next) => {
     }
 
     const project = await Project.findOne({ _id: req.body.projectId, isActive: true });
-    
+
     if (!project) {
       return res.status(404).json({
         success: false,
@@ -184,11 +183,10 @@ router.put('/:id', validateInput, validateTask, async (req, res, next) => {
       });
     }
 
-    const updatedTask = await Task.findOneAndUpdate(
-      { _id: req.params.id },
-      req.body,
-      { new: true, runValidators: true }
-    ).populate({
+    const updatedTask = await Task.findOneAndUpdate({ _id: req.params.id }, req.body, {
+      new: true,
+      runValidators: true
+    }).populate({
       path: 'project',
       populate: { path: 'client' }
     });
@@ -312,7 +310,7 @@ router.patch('/:id/complete', validateInput, async (req, res, next) => {
 
     const updatedTask = await Task.findOneAndUpdate(
       { _id: req.params.id },
-      { 
+      {
         status: 'completed',
         completedAt: new Date()
       },
@@ -350,11 +348,7 @@ router.delete('/:id', validateInput, async (req, res, next) => {
       });
     }
 
-    await Task.findOneAndUpdate(
-      { _id: req.params.id },
-      { isActive: false },
-      { new: true }
-    );
+    await Task.findOneAndUpdate({ _id: req.params.id }, { isActive: false }, { new: true });
 
     res.json({
       success: true,

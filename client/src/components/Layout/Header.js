@@ -94,16 +94,17 @@ const ViewToggle = styled.div`
 const ToggleButton = styled.button`
   padding: 8px 16px;
   border-radius: 8px;
-  color: ${props => props.isActive ? '#333333' : 'rgba(255, 255, 255, 0.8)'};
-  background: ${props => props.isActive ? 'rgba(255, 255, 255, 0.9)' : 'transparent'};
+  color: ${props => (props.isActive ? '#333333' : 'rgba(255, 255, 255, 0.8)')};
+  background: ${props => (props.isActive ? 'rgba(255, 255, 255, 0.9)' : 'transparent')};
   font-size: 13px;
-  font-weight: ${props => props.isActive ? '600' : '400'};
+  font-weight: ${props => (props.isActive ? '600' : '400')};
   transition: all 0.2s ease;
   white-space: nowrap;
 
   &:hover {
-    background: ${props => props.isActive ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.1)'};
-    color: ${props => props.isActive ? '#333333' : 'white'};
+    background: ${props =>
+      props.isActive ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.1)'};
+    color: ${props => (props.isActive ? '#333333' : 'white')};
   }
 `;
 
@@ -156,19 +157,19 @@ const Header = () => {
   const [currentView, setCurrentView] = useState('calendar');
 
   const today = new Date();
-  const formatDate = (date) => {
-    return date.toLocaleDateString('en-US', { 
-      weekday: 'long', 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
+  const formatDate = date => {
+    return date.toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
     });
   };
 
-  const formatTime = (date) => {
-    return date.toLocaleTimeString('en-US', { 
-      hour: '2-digit', 
-      minute: '2-digit' 
+  const formatTime = date => {
+    return date.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit'
     });
   };
 
@@ -181,7 +182,7 @@ const Header = () => {
             type="text"
             placeholder="Search clients, projects, tasks..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={e => setSearchQuery(e.target.value)}
           />
         </SearchContainer>
       </LeftSection>

@@ -30,15 +30,14 @@ router.get('/', validateInput, async (req, res, next) => {
 
 router.get('/:id', validateInput, async (req, res, next) => {
   try {
-    const client = await Client.findOne({ _id: req.params.id, isActive: true })
-      .populate({
-        path: 'projects',
-        match: { isActive: true },
-        populate: {
-          path: 'tasks',
-          match: { isActive: true }
-        }
-      });
+    const client = await Client.findOne({ _id: req.params.id, isActive: true }).populate({
+      path: 'projects',
+      match: { isActive: true },
+      populate: {
+        path: 'tasks',
+        match: { isActive: true }
+      }
+    });
 
     if (!client) {
       return res.status(404).json({
@@ -98,11 +97,10 @@ router.put('/:id', validateInput, validateClient, async (req, res, next) => {
       });
     }
 
-    const client = await Client.findOneAndUpdate(
-      { _id: req.params.id, isActive: true },
-      req.body,
-      { new: true, runValidators: true }
-    );
+    const client = await Client.findOneAndUpdate({ _id: req.params.id, isActive: true }, req.body, {
+      new: true,
+      runValidators: true
+    });
 
     if (!client) {
       return res.status(404).json({
@@ -145,11 +143,7 @@ router.delete('/:id', validateInput, async (req, res, next) => {
       });
     }
 
-    await Client.findOneAndUpdate(
-      { _id: req.params.id },
-      { isActive: false },
-      { new: true }
-    );
+    await Client.findOneAndUpdate({ _id: req.params.id }, { isActive: false }, { new: true });
 
     res.json({
       success: true,
@@ -162,15 +156,14 @@ router.delete('/:id', validateInput, async (req, res, next) => {
 
 router.get('/:id/dashboard', validateInput, async (req, res, next) => {
   try {
-    const client = await Client.findOne({ _id: req.params.id, isActive: true })
-      .populate({
-        path: 'projects',
-        match: { isActive: true },
-        populate: {
-          path: 'tasks',
-          match: { isActive: true }
-        }
-      });
+    const client = await Client.findOne({ _id: req.params.id, isActive: true }).populate({
+      path: 'projects',
+      match: { isActive: true },
+      populate: {
+        path: 'tasks',
+        match: { isActive: true }
+      }
+    });
 
     if (!client) {
       return res.status(404).json({
@@ -181,7 +174,7 @@ router.get('/:id/dashboard', validateInput, async (req, res, next) => {
 
     const projects = client.projects || [];
     const allTasks = projects.flatMap(project => project.tasks || []);
-    
+
     const stats = {
       totalProjects: projects.length,
       activeProjects: projects.filter(p => p.status === 'active').length,

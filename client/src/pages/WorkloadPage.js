@@ -1,7 +1,23 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from 'recharts';
-import { FiClock, FiTrendingUp, FiUsers, FiCalendar, FiAlertTriangle, FiCheckCircle } from 'react-icons/fi';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+} from 'recharts';
+import {
+  FiClock,
+  FiTrendingUp,
+  FiAlertTriangle,
+  FiCheckCircle
+} from 'react-icons/fi';
 
 const PageContainer = styled.div`
   max-width: 1200px;
@@ -60,13 +76,15 @@ const TimeButton = styled.button`
   border-radius: 8px;
   font-size: 13px;
   font-weight: 500;
-  color: ${props => props.isActive ? '#ffffff' : '#666666'};
-  background: ${props => props.isActive ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : '#f8f9fa'};
-  border: 2px solid ${props => props.isActive ? '#667eea' : '#e1e5e9'};
+  color: ${props => (props.isActive ? '#ffffff' : '#666666')};
+  background: ${props =>
+    props.isActive ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : '#f8f9fa'};
+  border: 2px solid ${props => (props.isActive ? '#667eea' : '#e1e5e9')};
   transition: all 0.2s ease;
 
   &:hover {
-    background: ${props => props.isActive ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : '#e9ecef'};
+    background: ${props =>
+      props.isActive ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : '#e9ecef'};
     border-color: #667eea;
   }
 `;
@@ -302,7 +320,9 @@ const RecommendationCard = styled.div`
   padding: 24px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-left: 4px solid ${props => props.type === 'warning' ? '#f39c12' : props.type === 'error' ? '#e74c3c' : '#2ecc71'};
+  border-left: 4px solid
+    ${props =>
+      props.type === 'warning' ? '#f39c12' : props.type === 'error' ? '#e74c3c' : '#2ecc71'};
 
   .header {
     display: flex;
@@ -312,7 +332,8 @@ const RecommendationCard = styled.div`
 
     svg {
       font-size: 24px;
-      color: ${props => props.type === 'warning' ? '#f39c12' : props.type === 'error' ? '#e74c3c' : '#2ecc71'};
+      color: ${props =>
+        props.type === 'warning' ? '#f39c12' : props.type === 'error' ? '#e74c3c' : '#2ecc71'};
     }
 
     h3 {
@@ -400,18 +421,20 @@ const WorkloadPage = () => {
 
   const getRecommendation = () => {
     const { utilizationRate, unscheduledHours } = workloadStats;
-    
+
     if (utilizationRate > 100) {
       return {
         type: 'error',
         title: 'Overcommitted',
-        message: 'You are overcommitted this week. Consider rescheduling some tasks or delegating work to meet all deadlines.'
+        message:
+          'You are overcommitted this week. Consider rescheduling some tasks or delegating work to meet all deadlines.'
       };
     } else if (utilizationRate > 90) {
       return {
         type: 'warning',
         title: 'Near Capacity',
-        message: 'You are near full capacity. Avoid taking on additional work this week and focus on completing scheduled tasks.'
+        message:
+          'You are near full capacity. Avoid taking on additional work this week and focus on completing scheduled tasks.'
       };
     } else if (unscheduledHours > 0) {
       return {
@@ -423,7 +446,8 @@ const WorkloadPage = () => {
       return {
         type: 'success',
         title: 'Good Balance',
-        message: 'Your workload is well balanced. You have good capacity management and can consider taking on additional work.'
+        message:
+          'Your workload is well balanced. You have good capacity management and can consider taking on additional work.'
       };
     }
   };
@@ -438,7 +462,7 @@ const WorkloadPage = () => {
           Understand your capacity, availability, and optimize your time management
         </PageSubtitle>
         <TimeRangeSelector>
-          {periods.map((period) => (
+          {periods.map(period => (
             <TimeButton
               key={period.value}
               isActive={selectedPeriod === period.value}
@@ -473,7 +497,9 @@ const WorkloadPage = () => {
         </StatCard>
         <StatCard>
           <div className="icon">✅</div>
-          <div className="number">{workloadStats.totalAvailable - workloadStats.totalCommitted}h</div>
+          <div className="number">
+            {workloadStats.totalAvailable - workloadStats.totalCommitted}h
+          </div>
           <div className="label">Free Time</div>
           <div className="sublabel">Available for new work</div>
         </StatCard>
@@ -540,7 +566,7 @@ const WorkloadPage = () => {
       <ClientBreakdown>
         <ClientCard>
           <h3>Client Workload Breakdown</h3>
-          {clientBreakdown.map((client) => (
+          {clientBreakdown.map(client => (
             <ClientItem key={client.name} color={client.color}>
               <ClientInfo>
                 <h4>{client.name}</h4>

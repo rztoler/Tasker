@@ -10,7 +10,7 @@ const modalStyles = {
     zIndex: 1000,
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   content: {
     position: 'relative',
@@ -22,7 +22,7 @@ const modalStyles = {
     maxWidth: '500px',
     width: '90%',
     maxHeight: '90vh',
-    overflow: 'visible',
+    overflow: 'visible'
   }
 };
 
@@ -188,8 +188,10 @@ const Button = styled.button`
   font-size: 14px;
   font-weight: 600;
   transition: all 0.2s ease;
-  
-  ${props => props.variant === 'primary' ? `
+
+  ${props =>
+    props.variant === 'primary'
+      ? `
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     
@@ -197,7 +199,8 @@ const Button = styled.button`
       transform: translateY(-2px);
       box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
     }
-  ` : `
+  `
+      : `
     background: #f1f3f4;
     color: #666666;
     
@@ -245,13 +248,13 @@ const AddProjectModal = ({ isOpen, onClose }) => {
     { value: 'completed', label: 'Completed' }
   ];
 
-  const handleInputChange = (e) => {
+  const handleInputChange = e => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
-    
+
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -275,9 +278,9 @@ const AddProjectModal = ({ isOpen, onClose }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -287,7 +290,7 @@ const AddProjectModal = ({ isOpen, onClose }) => {
     try {
       // TODO: API call to create project
       await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
-      
+
       toast.success('Project created successfully!');
       onClose();
       setFormData({
@@ -315,12 +318,7 @@ const AddProjectModal = ({ isOpen, onClose }) => {
   };
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onRequestClose={handleClose}
-      style={modalStyles}
-      ariaHideApp={false}
-    >
+    <Modal isOpen={isOpen} onRequestClose={handleClose} style={modalStyles} ariaHideApp={false}>
       <ModalContent>
         <ModalHeader>
           <h2>Add New Project</h2>
@@ -350,13 +348,9 @@ const AddProjectModal = ({ isOpen, onClose }) => {
               <FiUser />
               Client *
             </Label>
-            <Select
-              name="clientId"
-              value={formData.clientId}
-              onChange={handleInputChange}
-            >
+            <Select name="clientId" value={formData.clientId} onChange={handleInputChange}>
               <option value="">Select a client</option>
-              {clients.map((client) => (
+              {clients.map(client => (
                 <option key={client.id} value={client.id}>
                   {client.companyName}
                 </option>
@@ -366,15 +360,9 @@ const AddProjectModal = ({ isOpen, onClose }) => {
           </FormGroup>
 
           <FormGroup>
-            <Label>
-              Status
-            </Label>
-            <Select
-              name="status"
-              value={formData.status}
-              onChange={handleInputChange}
-            >
-              {statusOptions.map((option) => (
+            <Label>Status</Label>
+            <Select name="status" value={formData.status} onChange={handleInputChange}>
+              {statusOptions.map(option => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>

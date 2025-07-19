@@ -248,11 +248,11 @@ const ClientList = () => {
     }
   ]);
 
-  const handleEdit = (clientId) => {
+  const handleEdit = clientId => {
     console.log('Edit client:', clientId);
   };
 
-  const handleDelete = (clientId) => {
+  const handleDelete = clientId => {
     console.log('Delete client:', clientId);
   };
 
@@ -261,7 +261,7 @@ const ClientList = () => {
       <ListHeader>
         <h3>Client Overview</h3>
       </ListHeader>
-      
+
       <TableContainer>
         <Table>
           <TableHeader>
@@ -275,7 +275,7 @@ const ClientList = () => {
             </HeaderRow>
           </TableHeader>
           <TableBody>
-            {clients.map((client) => (
+            {clients.map(client => (
               <TableRow key={client.id}>
                 <TableCell>
                   <ClientInfo>
@@ -300,15 +300,15 @@ const ClientList = () => {
                         <FiEye />
                       </ActionButton>
                     </StyledLink>
-                    <ActionButton 
-                      variant="edit" 
+                    <ActionButton
+                      variant="edit"
                       title="Edit Client"
                       onClick={() => handleEdit(client.id)}
                     >
                       <FiEdit />
                     </ActionButton>
-                    <ActionButton 
-                      variant="delete" 
+                    <ActionButton
+                      variant="delete"
                       title="Delete Client"
                       onClick={() => handleDelete(client.id)}
                     >

@@ -24,16 +24,19 @@ A secure, intelligent task management and calendar system for managing multiple 
 
 1. Clone the repository
 2. Install dependencies:
+
    ```bash
    npm install
    ```
 
 3. Copy environment variables:
+
    ```bash
    cp .env.example .env
    ```
 
 4. Configure your environment variables in `.env`:
+
    - `MONGODB_URI`: Your MongoDB connection string
    - `JWT_SECRET`: A secure random string for JWT tokens
    - Other configuration as needed
@@ -46,6 +49,7 @@ A secure, intelligent task management and calendar system for managing multiple 
 ## API Endpoints
 
 ### Clients
+
 - `GET /api/clients` - List all clients
 - `POST /api/clients` - Create new client
 - `GET /api/clients/:id` - Get client details
@@ -54,6 +58,7 @@ A secure, intelligent task management and calendar system for managing multiple 
 - `GET /api/clients/:id/dashboard` - Client dashboard data
 
 ### Projects
+
 - `GET /api/projects` - List projects (with optional client filter)
 - `POST /api/projects` - Create new project
 - `GET /api/projects/:id` - Get project details
@@ -62,6 +67,7 @@ A secure, intelligent task management and calendar system for managing multiple 
 - `GET /api/projects/:id/stats` - Project statistics
 
 ### Tasks
+
 - `GET /api/tasks` - List tasks (with filtering)
 - `POST /api/tasks` - Create new task
 - `GET /api/tasks/:id` - Get task details
@@ -73,6 +79,7 @@ A secure, intelligent task management and calendar system for managing multiple 
 - `GET /api/tasks/scheduled` - Get scheduled tasks
 
 ### Events
+
 - `GET /api/events` - List events
 - `POST /api/events` - Create new event
 - `GET /api/events/:id` - Get event details
@@ -82,6 +89,7 @@ A secure, intelligent task management and calendar system for managing multiple 
 - `GET /api/events/conflicts` - Check for time conflicts
 
 ### Calendar
+
 - `GET /api/calendar/view` - Get calendar view (day/week/month)
 - `GET /api/calendar/workload` - Get workload analysis
 - `GET /api/calendar/dashboard` - Get dashboard summary
@@ -89,21 +97,25 @@ A secure, intelligent task management and calendar system for managing multiple 
 ## Data Models
 
 ### Client
+
 - Company Name, Contact Name, Color, Time Zone
 - Email, Phone (optional)
 - Soft delete support
 
 ### Project
+
 - Name, Description, Status
 - Associated with Client
 - Progress tracking
 
 ### Task
+
 - Name, Description, Priority (1-5), Duration
 - Due Date, Status, Scheduling info
 - Smart locking for completed past-due tasks
 
 ### Event
+
 - Name, Description, Start/End DateTime
 - Type, Location, Attendees
 - Recurrence support

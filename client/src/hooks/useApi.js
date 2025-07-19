@@ -10,15 +10,15 @@ export const useApi = (apiFunction, dependencies = []) => {
   const fetchData = useCallback(async () => {
     setLoading(true);
     setError(null);
-    
+
     const result = await apiHelpers.safeApiCall(apiFunction);
-    
+
     if (result.success) {
       setData(result.data);
     } else {
       setError(result.error);
     }
-    
+
     setLoading(false);
   }, dependencies);
 
@@ -38,19 +38,19 @@ export const useApiMutation = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const mutate = useCallback(async (apiFunction) => {
+  const mutate = useCallback(async apiFunction => {
     setLoading(true);
     setError(null);
-    
+
     const result = await apiHelpers.safeApiCall(apiFunction);
-    
+
     setLoading(false);
-    
+
     if (!result.success) {
       setError(result.error);
       throw new Error(result.error);
     }
-    
+
     return result.data;
   }, []);
 
@@ -69,36 +69,39 @@ export const usePaginatedApi = (apiFunction, initialParams = {}) => {
     current: 1,
     total: 1,
     count: 0,
-    totalCount: 0,
+    totalCount: 0
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [params, setParams] = useState(initialParams);
 
-  const fetchData = useCallback(async (newParams = {}) => {
-    setLoading(true);
-    setError(null);
-    
-    const mergedParams = { ...params, ...newParams };
-    const result = await apiHelpers.safeApiCall(() => apiFunction(mergedParams));
-    
-    if (result.success) {
-      setData(result.data.data || result.data);
-      if (result.data.pagination) {
-        setPagination(result.data.pagination);
+  const fetchData = useCallback(
+    async (newParams = {}) => {
+      setLoading(true);
+      setError(null);
+
+      const mergedParams = { ...params, ...newParams };
+      const result = await apiHelpers.safeApiCall(() => apiFunction(mergedParams));
+
+      if (result.success) {
+        setData(result.data.data || result.data);
+        if (result.data.pagination) {
+          setPagination(result.data.pagination);
+        }
+      } else {
+        setError(result.error);
       }
-    } else {
-      setError(result.error);
-    }
-    
-    setLoading(false);
-  }, [apiFunction, params]);
+
+      setLoading(false);
+    },
+    [apiFunction, params]
+  );
 
   useEffect(() => {
     fetchData();
   }, [fetchData]);
 
-  const updateParams = useCallback((newParams) => {
+  const updateParams = useCallback(newParams => {
     setParams(prev => ({ ...prev, ...newParams }));
   }, []);
 
@@ -114,11 +117,14 @@ export const usePaginatedApi = (apiFunction, initialParams = {}) => {
     }
   }, [pagination.current, updateParams]);
 
-  const goToPage = useCallback((page) => {
-    if (page >= 1 && page <= pagination.total) {
-      updateParams({ page });
-    }
-  }, [pagination.total, updateParams]);
+  const goToPage = useCallback(
+    page => {
+      if (page >= 1 && page <= pagination.total) {
+        updateParams({ page });
+      }
+    },
+    [pagination.total, updateParams]
+  );
 
   const refetch = useCallback(() => {
     fetchData();
@@ -134,7 +140,7 @@ export const usePaginatedApi = (apiFunction, initialParams = {}) => {
     nextPage,
     prevPage,
     goToPage,
-    refetch,
+    refetch
   };
 };
 
@@ -163,7 +169,7 @@ export const useRealtimeApi = (apiFunction, interval = 30000, dependencies = [])
     error,
     refetch,
     isAutoRefresh,
-    toggleAutoRefresh,
+    toggleAutoRefresh
   };
 };
 
@@ -172,29 +178,32 @@ export const useApiForm = (submitFunction, onSuccess, onError) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const submit = useCallback(async (formData) => {
-    setLoading(true);
-    setError(null);
-    
-    try {
-      const result = await apiHelpers.safeApiCall(() => submitFunction(formData));
-      
-      if (result.success) {
-        if (onSuccess) {
-          onSuccess(result.data);
+  const submit = useCallback(
+    async formData => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const result = await apiHelpers.safeApiCall(() => submitFunction(formData));
+
+        if (result.success) {
+          if (onSuccess) {
+            onSuccess(result.data);
+          }
+          return result.data;
+        } else {
+          setError(result.error);
+          if (onError) {
+            onError(result.error);
+          }
+          throw new Error(result.error);
         }
-        return result.data;
-      } else {
-        setError(result.error);
-        if (onError) {
-          onError(result.error);
-        }
-        throw new Error(result.error);
+      } finally {
+        setLoading(false);
       }
-    } finally {
-      setLoading(false);
-    }
-  }, [submitFunction, onSuccess, onError]);
+    },
+    [submitFunction, onSuccess, onError]
+  );
 
   const reset = useCallback(() => {
     setLoading(false);

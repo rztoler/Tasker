@@ -100,16 +100,16 @@ class SmartScheduler {
   async findOptimalTimeSlot(task, startDate, maxSearchDays, timeZone) {
     const searchEnd = moment(startDate).add(maxSearchDays, 'days');
     const currentDate = moment(startDate).tz(timeZone);
-    
+
     while (currentDate.isBefore(searchEnd) && currentDate.isBefore(moment(task.dueDate))) {
       if (this.workingDays.includes(currentDate.day())) {
         const daySlots = await this.getAvailableSlotsForDay(currentDate.toDate(), timeZone);
-        
+
         for (const slot of daySlots) {
           if (slot.duration >= task.duration) {
             const urgencyScore = this.calculateUrgencyScore(task, slot.start);
             const conflictLevel = await this.checkConflictLevel(slot.start, slot.end, task._id);
-            
+
             if (conflictLevel === 'none') {
               return {
                 start: slot.start,
@@ -214,7 +214,7 @@ class SmartScheduler {
     ]);
 
     const totalConflicts = conflicts[0].length + conflicts[1].length;
-    
+
     if (totalConflicts === 0) return 'none';
     if (totalConflicts === 1) return 'low';
     if (totalConflicts <= 3) return 'medium';
@@ -239,19 +239,19 @@ class SmartScheduler {
     const now = moment();
     const dueDate = moment(task.dueDate);
     const daysUntilDue = dueDate.diff(now, 'days');
-    
+
     let score = task.priority * 10;
-    
+
     if (daysUntilDue <= 1) score += 50;
     else if (daysUntilDue <= 3) score += 30;
     else if (daysUntilDue <= 7) score += 20;
     else if (daysUntilDue <= 14) score += 10;
-    
+
     if (task.isOverdue) score += 100;
-    
+
     const estimatedComplexity = Math.min(task.duration * 2, 20);
     score += estimatedComplexity;
-    
+
     return score;
   }
 
@@ -334,7 +334,7 @@ class SmartScheduler {
 
   async findSchedulingConflicts(task, requirements) {
     const { start, end } = requirements;
-    
+
     const [taskConflicts, eventConflicts] = await Promise.all([
       Task.find({
         _id: { $ne: task._id },
@@ -376,14 +376,14 @@ class SmartScheduler {
     const timeZone = task.project?.client?.timeZone || 'UTC';
     const searchStart = moment(requirements.preferredStart || new Date());
     const searchEnd = searchStart.clone().add(requirements.maxSearchDays || 14, 'days');
-    
+
     const alternatives = [];
     const currentDate = searchStart.clone();
 
     while (currentDate.isBefore(searchEnd) && alternatives.length < 10) {
       if (this.workingDays.includes(currentDate.day())) {
         const daySlots = await this.getAvailableSlotsForDay(currentDate.toDate(), timeZone);
-        
+
         for (const slot of daySlots) {
           if (slot.duration >= task.duration) {
             const score = this.calculateSlotScore(task, slot);
@@ -406,23 +406,23 @@ class SmartScheduler {
 
   calculateSlotScore(task, slot) {
     let score = 0;
-    
+
     const slotMoment = moment(slot.start);
     const hour = slotMoment.hour();
-    
+
     if (hour >= 9 && hour <= 11) score += 10;
     else if (hour >= 14 && hour <= 16) score += 8;
     else if (hour >= 11 && hour <= 14) score += 5;
-    
+
     const daysUntilDue = moment(task.dueDate).diff(slotMoment, 'days');
     if (daysUntilDue > 1) {
       score += Math.min(daysUntilDue, 10);
     }
-    
+
     score += task.priority * 2;
-    
+
     if (slot.duration > task.duration * 1.5) score += 5;
-    
+
     return score;
   }
 
@@ -439,11 +439,17 @@ class SmartScheduler {
     const conflictCount = conflicts.tasks.length + conflicts.events.length;
 
     if (conflictCount === 1) {
-      return `Minor conflict detected. Suggested alternative: ${moment(bestAlternative.start).format('YYYY-MM-DD HH:mm')}`;
+      return `Minor conflict detected. Suggested alternative: ${moment(
+        bestAlternative.start
+      ).format('YYYY-MM-DD HH:mm')}`;
     } else if (conflictCount <= 3) {
-      return `Multiple conflicts detected. Best alternative: ${moment(bestAlternative.start).format('YYYY-MM-DD HH:mm')} (Score: ${bestAlternative.score})`;
+      return `Multiple conflicts detected. Best alternative: ${moment(bestAlternative.start).format(
+        'YYYY-MM-DD HH:mm'
+      )} (Score: ${bestAlternative.score})`;
     } else {
-      return `Significant scheduling conflicts. Immediate rescheduling recommended to ${moment(bestAlternative.start).format('YYYY-MM-DD HH:mm')}`;
+      return `Significant scheduling conflicts. Immediate rescheduling recommended to ${moment(
+        bestAlternative.start
+      ).format('YYYY-MM-DD HH:mm')}`;
     }
   }
 }

@@ -1,0 +1,17 @@
+node_modules
+client/node_modules
+client/build
+dist
+build
+.git
+.DS_Store
+*.log
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+coverage
+.nyc_output
+package-lock.json
+yarn.lock

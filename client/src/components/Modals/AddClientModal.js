@@ -10,7 +10,7 @@ const modalStyles = {
     zIndex: 1000,
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   content: {
     position: 'relative',
@@ -22,7 +22,7 @@ const modalStyles = {
     maxWidth: '500px',
     width: '90%',
     maxHeight: '90vh',
-    overflow: 'visible',
+    overflow: 'visible'
   }
 };
 
@@ -163,7 +163,7 @@ const ColorOption = styled.button`
   height: 40px;
   border-radius: 50%;
   background-color: ${props => props.color};
-  border: 3px solid ${props => props.isSelected ? '#333333' : 'transparent'};
+  border: 3px solid ${props => (props.isSelected ? '#333333' : 'transparent')};
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   transition: all 0.2s ease;
 
@@ -190,8 +190,10 @@ const Button = styled.button`
   font-size: 14px;
   font-weight: 600;
   transition: all 0.2s ease;
-  
-  ${props => props.variant === 'primary' ? `
+
+  ${props =>
+    props.variant === 'primary'
+      ? `
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     
@@ -199,7 +201,8 @@ const Button = styled.button`
       transform: translateY(-2px);
       box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
     }
-  ` : `
+  `
+      : `
     background: #f1f3f4;
     color: #666666;
     
@@ -223,14 +226,19 @@ const ErrorMessage = styled.div`
 `;
 
 const colorOptions = [
-  '#3498db', '#e74c3c', '#2ecc71', '#f39c12', '#9b59b6',
-  '#1abc9c', '#34495e', '#e67e22', '#95a5a6', '#16a085'
+  '#3498db',
+  '#e74c3c',
+  '#2ecc71',
+  '#f39c12',
+  '#9b59b6',
+  '#1abc9c',
+  '#34495e',
+  '#e67e22',
+  '#95a5a6',
+  '#16a085'
 ];
 
-const timeZones = [
-  'EST', 'CST', 'MST', 'PST', 'UTC',
-  'GMT', 'CET', 'JST', 'AEST', 'IST'
-];
+const timeZones = ['EST', 'CST', 'MST', 'PST', 'UTC', 'GMT', 'CET', 'JST', 'AEST', 'IST'];
 
 const AddClientModal = ({ isOpen, onClose }) => {
   const [formData, setFormData] = useState({
@@ -244,13 +252,13 @@ const AddClientModal = ({ isOpen, onClose }) => {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleInputChange = (e) => {
+  const handleInputChange = e => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
-    
+
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -259,7 +267,7 @@ const AddClientModal = ({ isOpen, onClose }) => {
     }
   };
 
-  const handleColorSelect = (color) => {
+  const handleColorSelect = color => {
     setFormData(prev => ({
       ...prev,
       color
@@ -285,9 +293,9 @@ const AddClientModal = ({ isOpen, onClose }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -297,7 +305,7 @@ const AddClientModal = ({ isOpen, onClose }) => {
     try {
       // TODO: API call to create client
       await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
-      
+
       toast.success('Client created successfully!');
       onClose();
       setFormData({
@@ -329,12 +337,7 @@ const AddClientModal = ({ isOpen, onClose }) => {
   };
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onRequestClose={handleClose}
-      style={modalStyles}
-      ariaHideApp={false}
-    >
+    <Modal isOpen={isOpen} onRequestClose={handleClose} style={modalStyles} ariaHideApp={false}>
       <ModalContent>
         <ModalHeader>
           <h2>Add New Client</h2>
@@ -412,11 +415,9 @@ const AddClientModal = ({ isOpen, onClose }) => {
           </FormGroup>
 
           <FormGroup>
-            <Label>
-              Client Color
-            </Label>
+            <Label>Client Color</Label>
             <ColorPickerContainer>
-              {colorOptions.map((color) => (
+              {colorOptions.map(color => (
                 <ColorOption
                   key={color}
                   type="button"
@@ -433,13 +434,11 @@ const AddClientModal = ({ isOpen, onClose }) => {
               <FiGlobe />
               Time Zone
             </Label>
-            <Select
-              name="timeZone"
-              value={formData.timeZone}
-              onChange={handleInputChange}
-            >
-              {timeZones.map((tz) => (
-                <option key={tz} value={tz}>{tz}</option>
+            <Select name="timeZone" value={formData.timeZone} onChange={handleInputChange}>
+              {timeZones.map(tz => (
+                <option key={tz} value={tz}>
+                  {tz}
+                </option>
               ))}
             </Select>
           </FormGroup>

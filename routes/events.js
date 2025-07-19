@@ -8,9 +8,9 @@ router.get('/', validateInput, async (req, res, next) => {
   try {
     const { startDate, endDate, type, page = 1, limit = 50 } = req.query;
     const filter = { isActive: true };
-    
+
     if (type) filter.type = type;
-    
+
     if (startDate && endDate) {
       filter.startDateTime = {
         $gte: new Date(startDate),
@@ -128,7 +128,7 @@ router.get('/:id', validateInput, async (req, res, next) => {
 router.post('/', validateInput, validateEvent, async (req, res, next) => {
   try {
     const { date, startTime, endTime, ...eventData } = req.body;
-    
+
     const startDateTime = new Date(`${date}T${startTime}`);
     const endDateTime = new Date(`${date}T${endTime}`);
 
@@ -192,7 +192,7 @@ router.put('/:id', validateInput, validateEvent, async (req, res, next) => {
     }
 
     const { date, startTime, endTime, ...eventData } = req.body;
-    
+
     const startDateTime = new Date(`${date}T${startTime}`);
     const endDateTime = new Date(`${date}T${endTime}`);
 
@@ -258,11 +258,7 @@ router.delete('/:id', validateInput, async (req, res, next) => {
       });
     }
 
-    await Event.findOneAndUpdate(
-      { _id: req.params.id },
-      { isActive: false },
-      { new: true }
-    );
+    await Event.findOneAndUpdate({ _id: req.params.id }, { isActive: false }, { new: true });
 
     res.json({
       success: true,

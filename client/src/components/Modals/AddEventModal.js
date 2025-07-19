@@ -4,7 +4,7 @@ import Modal from 'react-modal';
 import DatePicker from 'react-datepicker';
 import { FiX, FiCalendar, FiClock, FiMapPin, FiFileText, FiUsers } from 'react-icons/fi';
 import toast from 'react-hot-toast';
-import "react-datepicker/dist/react-datepicker.css";
+import 'react-datepicker/dist/react-datepicker.css';
 
 const modalStyles = {
   overlay: {
@@ -12,7 +12,7 @@ const modalStyles = {
     zIndex: 1000,
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   content: {
     position: 'relative',
@@ -24,7 +24,7 @@ const modalStyles = {
     maxWidth: '600px',
     width: '90%',
     maxHeight: '90vh',
-    overflow: 'visible',
+    overflow: 'visible'
   }
 };
 
@@ -217,7 +217,7 @@ const ColorOption = styled.button`
   height: 40px;
   border-radius: 50%;
   background-color: ${props => props.color};
-  border: 3px solid ${props => props.isSelected ? '#333333' : 'transparent'};
+  border: 3px solid ${props => (props.isSelected ? '#333333' : 'transparent')};
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   transition: all 0.2s ease;
 
@@ -244,8 +244,10 @@ const Button = styled.button`
   font-size: 14px;
   font-weight: 600;
   transition: all 0.2s ease;
-  
-  ${props => props.variant === 'primary' ? `
+
+  ${props =>
+    props.variant === 'primary'
+      ? `
     background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
     color: white;
     
@@ -253,7 +255,8 @@ const Button = styled.button`
       transform: translateY(-2px);
       box-shadow: 0 8px 20px rgba(46, 204, 113, 0.3);
     }
-  ` : `
+  `
+      : `
     background: #f1f3f4;
     color: #666666;
     
@@ -316,11 +319,11 @@ const AttendeeTag = styled.div`
   color: #2e7d32;
   border-radius: 20px;
   font-size: 12px;
-  
+
   button {
     color: #2e7d32;
     font-size: 14px;
-    
+
     &:hover {
       color: #1b5e20;
     }
@@ -328,8 +331,16 @@ const AttendeeTag = styled.div`
 `;
 
 const colorOptions = [
-  '#2ecc71', '#3498db', '#e74c3c', '#f39c12', '#9b59b6',
-  '#1abc9c', '#34495e', '#e67e22', '#95a5a6', '#16a085'
+  '#2ecc71',
+  '#3498db',
+  '#e74c3c',
+  '#f39c12',
+  '#9b59b6',
+  '#1abc9c',
+  '#34495e',
+  '#e67e22',
+  '#95a5a6',
+  '#16a085'
 ];
 
 const eventTypes = [
@@ -356,13 +367,13 @@ const AddEventModal = ({ isOpen, onClose, selectedDate }) => {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleInputChange = (e) => {
+  const handleInputChange = e => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
-    
+
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -378,7 +389,7 @@ const AddEventModal = ({ isOpen, onClose, selectedDate }) => {
     }));
   };
 
-  const handleColorSelect = (color) => {
+  const handleColorSelect = color => {
     setFormData(prev => ({
       ...prev,
       color
@@ -395,7 +406,7 @@ const AddEventModal = ({ isOpen, onClose, selectedDate }) => {
     }
   };
 
-  const removeAttendee = (emailToRemove) => {
+  const removeAttendee = emailToRemove => {
     setFormData(prev => ({
       ...prev,
       attendees: prev.attendees.filter(a => a.email !== emailToRemove)
@@ -423,9 +434,9 @@ const AddEventModal = ({ isOpen, onClose, selectedDate }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -435,7 +446,7 @@ const AddEventModal = ({ isOpen, onClose, selectedDate }) => {
     try {
       // TODO: API call to create event
       await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
-      
+
       toast.success('Event created successfully!');
       onClose();
       setFormData({
@@ -472,12 +483,7 @@ const AddEventModal = ({ isOpen, onClose, selectedDate }) => {
   };
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onRequestClose={handleClose}
-      style={modalStyles}
-      ariaHideApp={false}
-    >
+    <Modal isOpen={isOpen} onRequestClose={handleClose} style={modalStyles} ariaHideApp={false}>
       <ModalContent>
         <ModalHeader>
           <h2>Add New Event</h2>
@@ -511,7 +517,7 @@ const AddEventModal = ({ isOpen, onClose, selectedDate }) => {
               <DatePickerWrapper>
                 <DatePicker
                   selected={formData.startDateTime}
-                  onChange={(date) => handleDateTimeChange('startDateTime', date)}
+                  onChange={date => handleDateTimeChange('startDateTime', date)}
                   showTimeSelect
                   dateFormat="MMMM d, yyyy h:mm aa"
                   placeholderText="Select start date and time"
@@ -528,7 +534,7 @@ const AddEventModal = ({ isOpen, onClose, selectedDate }) => {
               <DatePickerWrapper>
                 <DatePicker
                   selected={formData.endDateTime}
-                  onChange={(date) => handleDateTimeChange('endDateTime', date)}
+                  onChange={date => handleDateTimeChange('endDateTime', date)}
                   showTimeSelect
                   dateFormat="MMMM d, yyyy h:mm aa"
                   placeholderText="Select end date and time"
@@ -540,15 +546,9 @@ const AddEventModal = ({ isOpen, onClose, selectedDate }) => {
 
           <FormRow>
             <FormGroup>
-              <Label>
-                Event Type
-              </Label>
-              <Select
-                name="type"
-                value={formData.type}
-                onChange={handleInputChange}
-              >
-                {eventTypes.map((type) => (
+              <Label>Event Type</Label>
+              <Select name="type" value={formData.type} onChange={handleInputChange}>
+                {eventTypes.map(type => (
                   <option key={type.value} value={type.value}>
                     {type.label}
                   </option>
@@ -572,11 +572,9 @@ const AddEventModal = ({ isOpen, onClose, selectedDate }) => {
           </FormRow>
 
           <FormGroup>
-            <Label>
-              Event Color
-            </Label>
+            <Label>Event Color</Label>
             <ColorPickerContainer>
-              {colorOptions.map((color) => (
+              {colorOptions.map(color => (
                 <ColorOption
                   key={color}
                   type="button"
@@ -597,7 +595,7 @@ const AddEventModal = ({ isOpen, onClose, selectedDate }) => {
               <Input
                 type="email"
                 value={newAttendeeEmail}
-                onChange={(e) => setNewAttendeeEmail(e.target.value)}
+                onChange={e => setNewAttendeeEmail(e.target.value)}
                 placeholder="Enter attendee email"
               />
               <AddAttendeeButton type="button" onClick={addAttendee}>
@@ -605,7 +603,7 @@ const AddEventModal = ({ isOpen, onClose, selectedDate }) => {
               </AddAttendeeButton>
             </AttendeeInput>
             <AttendeeList>
-              {formData.attendees.map((attendee) => (
+              {formData.attendees.map(attendee => (
                 <AttendeeTag key={attendee.email}>
                   {attendee.email}
                   <button type="button" onClick={() => removeAttendee(attendee.email)}>

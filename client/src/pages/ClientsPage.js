@@ -322,16 +322,17 @@ const ClientsPage = () => {
     }
   ]);
 
-  const filteredClients = clients.filter(client =>
-    client.companyName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    client.contactName.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredClients = clients.filter(
+    client =>
+      client.companyName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      client.contactName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleEdit = (clientId) => {
+  const handleEdit = clientId => {
     console.log('Edit client:', clientId);
   };
 
-  const handleDelete = (clientId) => {
+  const handleDelete = clientId => {
     console.log('Delete client:', clientId);
   };
 
@@ -346,7 +347,7 @@ const ClientsPage = () => {
               type="text"
               placeholder="Search clients..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={e => setSearchQuery(e.target.value)}
             />
           </SearchContainer>
           <AddButton onClick={() => setShowAddModal(true)}>
@@ -360,10 +361,9 @@ const ClientsPage = () => {
         <EmptyState>
           <h3>No clients found</h3>
           <p>
-            {searchQuery ? 
-              `No clients match "${searchQuery}". Try adjusting your search.` :
-              'Get started by adding your first client.'
-            }
+            {searchQuery
+              ? `No clients match "${searchQuery}". Try adjusting your search.`
+              : 'Get started by adding your first client.'}
           </p>
           {!searchQuery && (
             <AddButton onClick={() => setShowAddModal(true)}>
@@ -374,7 +374,7 @@ const ClientsPage = () => {
         </EmptyState>
       ) : (
         <ClientsGrid>
-          {filteredClients.map((client) => (
+          {filteredClients.map(client => (
             <ClientCard key={client.id} className="hover-lift">
               <ClientHeader>
                 <ClientColorDot color={client.color} />
@@ -401,15 +401,15 @@ const ClientsPage = () => {
                     <FiEye />
                   </ActionButton>
                 </StyledLink>
-                <ActionButton 
-                  variant="edit" 
+                <ActionButton
+                  variant="edit"
                   title="Edit Client"
                   onClick={() => handleEdit(client.id)}
                 >
                   <FiEdit />
                 </ActionButton>
-                <ActionButton 
-                  variant="delete" 
+                <ActionButton
+                  variant="delete"
                   title="Delete Client"
                   onClick={() => handleDelete(client.id)}
                 >
@@ -421,10 +421,7 @@ const ClientsPage = () => {
         </ClientsGrid>
       )}
 
-      <AddClientModal 
-        isOpen={showAddModal} 
-        onClose={() => setShowAddModal(false)} 
-      />
+      <AddClientModal isOpen={showAddModal} onClose={() => setShowAddModal(false)} />
     </PageContainer>
   );
 };

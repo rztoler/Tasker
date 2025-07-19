@@ -73,12 +73,14 @@ const ViewButton = styled.button`
   border-radius: 8px;
   font-size: 13px;
   font-weight: 500;
-  color: ${props => props.isActive ? '#ffffff' : '#666666'};
-  background: ${props => props.isActive ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'transparent'};
+  color: ${props => (props.isActive ? '#ffffff' : '#666666')};
+  background: ${props =>
+    props.isActive ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'transparent'};
   transition: all 0.2s ease;
 
   &:hover {
-    background: ${props => props.isActive ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : '#f8f9fa'};
+    background: ${props =>
+      props.isActive ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : '#f8f9fa'};
   }
 `;
 
@@ -96,10 +98,10 @@ const AddButton = styled.button`
   align-items: center;
   gap: 8px;
   padding: 12px 20px;
-  background: ${props => props.variant === 'task' ? 
-    'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 
-    'linear-gradient(135deg, #2ecc71 0%, #27ae60 100%)'
-  };
+  background: ${props =>
+    props.variant === 'task'
+      ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+      : 'linear-gradient(135deg, #2ecc71 0%, #27ae60 100%)'};
   color: white;
   border-radius: 12px;
   font-weight: 600;
@@ -108,10 +110,9 @@ const AddButton = styled.button`
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px ${props => props.variant === 'task' ? 
-      'rgba(102, 126, 234, 0.3)' : 
-      'rgba(46, 204, 113, 0.3)'
-    };
+    box-shadow: 0 8px 20px
+      ${props =>
+        props.variant === 'task' ? 'rgba(102, 126, 234, 0.3)' : 'rgba(46, 204, 113, 0.3)'};
   }
 
   svg {
@@ -188,7 +189,7 @@ const CalendarContainer = styled.div`
   .rbc-date-cell {
     padding: 8px;
     text-align: right;
-    
+
     &.rbc-off-range-bg {
       background: #f8f9fa;
     }
@@ -205,19 +206,19 @@ const CalendarContainer = styled.div`
     font-size: 12px;
     font-weight: 500;
     margin: 1px 0;
-    
+
     &.task-event {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     }
-    
+
     &.event-event {
       background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
     }
-    
+
     &.priority-5 {
       background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
     }
-    
+
     &.priority-4 {
       background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
     }
@@ -330,7 +331,7 @@ const ItemTime = styled.div`
   font-size: 12px;
   color: #999999;
   text-align: right;
-  
+
   .time {
     font-weight: 600;
     color: #667eea;
@@ -483,11 +484,11 @@ const CalendarPage = () => {
     setShowTaskModal(true);
   };
 
-  const handleSelectEvent = (event) => {
+  const handleSelectEvent = event => {
     console.log('Selected event:', event);
   };
 
-  const eventStyleGetter = (event) => {
+  const eventStyleGetter = event => {
     return {
       style: {
         fontSize: '12px',
@@ -502,22 +503,13 @@ const CalendarPage = () => {
         <PageTitle>Calendar</PageTitle>
         <HeaderActions>
           <ViewSelector>
-            <ViewButton 
-              isActive={currentView === 'month'}
-              onClick={() => setCurrentView('month')}
-            >
+            <ViewButton isActive={currentView === 'month'} onClick={() => setCurrentView('month')}>
               Month
             </ViewButton>
-            <ViewButton 
-              isActive={currentView === 'week'}
-              onClick={() => setCurrentView('week')}
-            >
+            <ViewButton isActive={currentView === 'week'} onClick={() => setCurrentView('week')}>
               Week
             </ViewButton>
-            <ViewButton 
-              isActive={currentView === 'day'}
-              onClick={() => setCurrentView('day')}
-            >
+            <ViewButton isActive={currentView === 'day'} onClick={() => setCurrentView('day')}>
               Day
             </ViewButton>
           </ViewSelector>
@@ -550,8 +542,9 @@ const CalendarPage = () => {
           formats={{
             timeGutterFormat: 'h:mm A',
             eventTimeRangeFormat: ({ start, end }, culture, localizer) =>
-              localizer.format(start, 'h:mm A', culture) + ' - ' +
-              localizer.format(end, 'h:mm A', culture),
+              localizer.format(start, 'h:mm A', culture) +
+              ' - ' +
+              localizer.format(end, 'h:mm A', culture)
           }}
         />
       </CalendarContainer>
@@ -563,7 +556,7 @@ const CalendarPage = () => {
             Upcoming Tasks
           </h3>
           <UpcomingList>
-            {upcomingTasks.map((task) => (
+            {upcomingTasks.map(task => (
               <UpcomingItem key={task.id} color={task.color}>
                 <ItemInfo>
                   <h4>{task.name}</h4>
@@ -584,7 +577,7 @@ const CalendarPage = () => {
             Upcoming Events
           </h3>
           <UpcomingList>
-            {upcomingEvents.map((event) => (
+            {upcomingEvents.map(event => (
               <UpcomingItem key={event.id} color={event.color}>
                 <ItemInfo>
                   <h4>{event.name}</h4>
@@ -625,14 +618,14 @@ const CalendarPage = () => {
         </StatsGrid>
       </PanelCard>
 
-      <AddTaskModal 
-        isOpen={showTaskModal} 
+      <AddTaskModal
+        isOpen={showTaskModal}
         onClose={() => setShowTaskModal(false)}
         selectedDate={selectedDate}
       />
-      
-      <AddEventModal 
-        isOpen={showEventModal} 
+
+      <AddEventModal
+        isOpen={showEventModal}
         onClose={() => setShowEventModal(false)}
         selectedDate={selectedDate}
       />
