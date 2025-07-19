@@ -15,7 +15,7 @@
     "lint": "eslint .",
     "lint:client": "cd client && npm run lint",
     "build": "npm run client:build",
-    "heroku-postbuild": "npm run client:install && npm run client:build"
+    "vercel-build": "npm run client:install && npm run client:build"
   },
   "dependencies": {
     "express": "^4.18.0",
